@@ -18,9 +18,9 @@ public class Contact implements Comparable<Contact>  {
 	}
 
 
-	@Override
-	public int compareTo(Contact o) {
-		return this.name.compareTo(o.getName()) ;
+	@Override // if "less than" return negative, if "greater than" return positive, and zero if "equal" 
+	public int compareTo(Contact contact) {
+		return this.name.compareTo(contact.getName()) ;
 	}
 
 
