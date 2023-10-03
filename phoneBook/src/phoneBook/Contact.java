@@ -7,14 +7,16 @@ public class Contact implements Comparable<Contact>  {
 	private String email;
 	private String address;
 	private String notes;
+	private String birthday;
 	
-	public Contact(String name, String phoneNumber, String email, String address, String notes) {
+	public Contact(String name, String phoneNumber,String birthday, String email, String address, String notes) {
 
 		this.name = name;
 		this.phoneNumber = phoneNumber;
 		this.email = email;
 		this.address = address;
 		this.notes = notes;
+		this.birthday = birthday;
 	}
 
 
@@ -31,6 +33,16 @@ public class Contact implements Comparable<Contact>  {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+
+	public String getBirthday() {
+		return birthday;
+	}
+
+
+	public void setBirthday(String birthday) {
+		this.birthday = birthday;
 	}
 
 
