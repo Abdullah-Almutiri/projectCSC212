@@ -22,7 +22,7 @@ public class Contact implements Comparable<Contact>  {
 
 	@Override // if "less than" return negative, if "greater than" return positive, and zero if "equal" 
 	public int compareTo(Contact contact) {
-		return this.name.compareTo(contact.getName()) ;
+		return this.contactName.compareToIgnoreCase(contact.getContactName());
 	}
 
 
