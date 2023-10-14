@@ -4,7 +4,8 @@ public class Node<T> {
 
     private T data;
     private Node<T> next;
-
+    public Node<T> previous;
+    
     public Node(T data){
         this.data = data;
     }
@@ -22,5 +23,11 @@ public class Node<T> {
 
     public Node<T> getNext() {
         return next;
+    }
+    public Node<T> getPrevious() {
+    	return previous;
+    }
+    public void setPrevious(Node<T> previous) {
+    	this.previous = previous;
     }
 }
