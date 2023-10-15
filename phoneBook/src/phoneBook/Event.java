@@ -1,4 +1,4 @@
-package z212project;
+package phoneBook;
 import java.util.Date;
 public class Event implements Comparable<Event> {
 	
