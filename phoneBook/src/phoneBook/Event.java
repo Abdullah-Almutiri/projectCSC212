@@ -1,33 +1,39 @@
-package phoneBook;
-
-public class Event {
+package z212project;
+import java.util.Date;
+public class Event implements Comparable<Event> {
 	
 	//Fields for Event's  title/Date and Time/Location/related Contact
-	private String eventTitle , eventDateTime , eventLocation;
-	private Contact eventContact;
-	
+	private String eventTitle;
+	private String eventContact;
+	private String eventLocation;
+	Date eventStartDate;
+	Date eventEndDate;
 	
 	public Event() { //Default Constructor
 		
 		eventTitle = "No event title scheduled";
-		eventDateTime = "No event date scheduled" ;
 		eventLocation = "No event location scheduled";
 		eventContact = null;
+		eventStartDate = new Date();
+		eventEndDate = new Date();
 		
 	}
 	
-	public Event(String eventTitle, String eventDateTime , String eventLocation , Contact eventContact) { //Fields Constructor
+	public Event(String eventTitle, String eventContact , String eventStartDate ,String eventEndDate , String eventLocation) { //Fields Constructor
 		
 		this.eventTitle = eventTitle;
-		this.eventDateTime = eventDateTime;
-		this.eventLocation = eventLocation;
 		this.eventContact = eventContact;
+		this.eventStartDate = new Date(eventStartDate);
+		this.eventEndDate = new Date(eventEndDate);
+		this.eventLocation = eventLocation;
 		
 	}
 	
 	
     // Setters/Getters for Event's fields
-	
+	public int compareTo(Event event) throws NullPointerException{
+		return this.eventTitle.compareToIgnoreCase(event.getEventTitle());
+	}
 	public String getEventTitle() {
 		return eventTitle; //bigO(1)
 	}
@@ -36,12 +42,21 @@ public class Event {
 		this.eventTitle = eventTitle; //bigO(1)
 	}
 
-	public String getEventDateTime() {
-		return eventDateTime; //bigO(1)
+
+	public Date getEventStartDate() {
+		return eventStartDate;
 	}
 
-	public void setEventDateTime(String eventDateTime) {
-		this.eventDateTime = eventDateTime; //bigO(1)
+	public void setEventStartDate(Date eventStartDate) {
+		this.eventStartDate = eventStartDate;
+	}
+
+	public Date getEventEndDate() {
+		return eventEndDate;
+	}
+
+	public void setEventEndDate(Date eventEndDate) {
+		this.eventEndDate = eventEndDate;
 	}
 
 	public String getEventLocation() {
@@ -52,15 +67,23 @@ public class Event {
 		this.eventLocation = eventLocation; //bigO(1)
 	}
 
-	public Contact getEventContact() {
+	public String getEventContact() {
 		return eventContact; //bigO(1)
 	}
 
-	public void setEventContact(Contact eventContact) {
+	public void setEventContact(String eventContact) {
 		this.eventContact = eventContact; //bigO(1)
+	}
+
+	@Override
+	public String toString() {
+		return  "\neventTitle= " + eventTitle +
+			    "\neventLocation=" + eventLocation +
+			    "\neventContact=" + eventContact + 
+			    "\neventStartDate=" + eventStartDate + 
+			    "\neventEndDate=" + eventEndDate;
 	}
 	
 	
 
 }
-
