@@ -2,16 +2,16 @@ package phoneBook;
 
 public class Contact implements Comparable<Contact>  {
 
-	private String name;
+	private String contactName;
 	private String phoneNumber;
 	private String email;
 	private String address;
 	private String notes;
 	private String birthday;
 	
-	public Contact(String name, String phoneNumber,String birthday, String email, String address, String notes) {
+	public Contact(String contactName, String phoneNumber,String birthday, String email, String address, String notes) {
 
-		this.name = name;
+		this.contactName = contactName;
 		this.phoneNumber = phoneNumber;
 		this.email = email;
 		this.address = address;
@@ -26,12 +26,12 @@ public class Contact implements Comparable<Contact>  {
 	}
 
 
-	public String getName() {
+	public String getContactName() {
 		return name;
 	}
 
 
-	public void setName(String name) {
+	public void setContactName(String name) {
 		this.name = name;
 	}
 
@@ -85,6 +85,15 @@ public class Contact implements Comparable<Contact>  {
 		this.notes = notes;
 	}
 	
+	@Override
+	public String toString() {
+		return "\nName = "          + contactName + 
+				"\nPhoneNumber = "  + phoneNumber + 
+				"\nEmailAddress = " + emailAddress + 
+				"\nAddress = "      + address + 
+				"\nBirthDay = "     + birthDay + 
+				"\nNotes = "        + notes;
+	}//Prints contact details
 	
 	
 	
