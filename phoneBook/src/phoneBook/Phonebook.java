@@ -1,4 +1,4 @@
-package z212project;
+package phoneBook;
 import java.util.Scanner;
 public class PhoneBook {
 	//The whole Start function represent the main, to start the program just create main class and call the Start function.
