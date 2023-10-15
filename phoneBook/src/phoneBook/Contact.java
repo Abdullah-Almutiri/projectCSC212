@@ -2,7 +2,7 @@ package phoneBook;
 
 public class Contact implements Comparable<Contact>  {
 
-	private String contactName;
+	private String name;
 	private String phoneNumber;
 	private String emailAddress;
 	private String address;
@@ -11,7 +11,7 @@ public class Contact implements Comparable<Contact>  {
 	
 	public Contact(String contactName, String phoneNumber,String birthday, String email, String address, String notes) {
 
-		this.contactName = contactName;
+		this.name = contactName;
 		this.phoneNumber = phoneNumber;
 		this.emailAddress = email;
 		this.address = address;
@@ -22,7 +22,7 @@ public class Contact implements Comparable<Contact>  {
 
 	@Override // if "less than" return negative, if "greater than" return positive, and zero if "equal" 
 	public int compareTo(Contact contact) {
-		return this.contactName.compareToIgnoreCase(contact.getContactName());
+		return this.name.compareToIgnoreCase(contact.getContactName());
 	}
 
 
@@ -87,12 +87,12 @@ public class Contact implements Comparable<Contact>  {
 	
 	@Override
 	public String toString() {
-		return "\nName = "          + contactName + 
-				"\nPhoneNumber = "  + phoneNumber + 
-				"\nEmailAddress = " + emailAddress + 
-				"\nAddress = "      + address + 
-				"\nBirthDay = "     + birthDay + 
-				"\nNotes = "        + notes;
+		return "\nName: "         + name + 
+			   "\nPhoneNumber: "  + phoneNumber + 
+			   "\nEmailAddress: " + email + 
+			   "\nAddress: "      + address + 
+			   "\nBirthDay: "     + birthday + 
+			   "\nNotes: "        + notes;
 	}//Prints contact details
 	
 	

@@ -4,7 +4,6 @@ package phoneBook;
 public class LinkedListADT<T>  implements list<T>{
     private Node<T> head;
     private Node<T> current;
-    private Node<T> previous;
     public int size;
     
     public int getSize() {
@@ -60,11 +59,15 @@ public class LinkedListADT<T>  implements list<T>{
     		head=newNode;
     	}
     	else{
-    		Node<T>	previous = current.getPrevious();
+    		/*Node<T>	previous = current.getPrevious();
     		newNode.setNext(current);
     		newNode.setPrevious(previous);
     		previous.setNext(newNode);
-    		current.setPrevious(newNode);
+    		current.setPrevious(newNode);*/
+            newNode.setNext(current.getNext());
+            current.getNext().setPrevious(newNode);
+            newNode.setPrevious(current);
+            current.setNext(newNode);
     	}
     	current = newNode;
     	size++;

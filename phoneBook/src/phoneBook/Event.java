@@ -1,5 +1,6 @@
 package phoneBook;
 import java.util.Date;
+
 public class Event implements Comparable<Event> {
 	
 	//Fields for Event's  title/Date and Time/Location/related Contact
@@ -77,11 +78,11 @@ public class Event implements Comparable<Event> {
 
 	@Override
 	public String toString() {
-		return  "\neventTitle= " + eventTitle +
-			    "\neventLocation=" + eventLocation +
-			    "\neventContact=" + eventContact + 
-			    "\neventStartDate=" + eventStartDate + 
-			    "\neventEndDate=" + eventEndDate;
+		return  "\neventTitle: " + eventTitle +
+			    "\neventLocation: " + eventLocation +
+			    "\neventContact: " + eventContact + 
+			    "\neventStartDate: " + eventStartDate + 
+			    "\neventEndDate: " + eventEndDate;
 	}
 	
 	
