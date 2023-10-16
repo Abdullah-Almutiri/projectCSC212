@@ -223,7 +223,7 @@ public class Phonebook {
                 System.out.println("Contact not found!");
                 break;
 			
-			// Exite 
+			// Exit
 			case 6 :
 				break;
 				
