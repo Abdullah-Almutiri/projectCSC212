@@ -33,6 +33,7 @@ public class Main {
 				try {
 					choice = input.nextInt();
 					VaildInput = true;
+                    
 				}catch(java.util.InputMismatchException ex){
 					System.out.print("Invaild choice, please re enter a vaild choice: ");
 					input.nextLine();

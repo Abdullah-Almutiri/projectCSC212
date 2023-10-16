@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import java.util.Scanner;
+
+import javax.xml.crypto.MarshalException;
 public class Phonebook {
 
 
@@ -14,6 +16,8 @@ public class Phonebook {
 	static Scanner input = new Scanner(System.in);
 
 
+
+	//================================
 	public void AddContact() {
 
 		try{
@@ -42,7 +46,7 @@ public class Phonebook {
 				throw new IllegalArgumentException();
 
 			if(Name.length() == 0)
-			throw new Exception();
+				throw new Exception();	
 
 
 
@@ -84,8 +88,9 @@ public class Phonebook {
 	
 	}
 	
-		///////////////////////////////////////////
 
+	
+	//================================
 	public void Search() {
 		
 		int choice=0;
@@ -106,6 +111,7 @@ public class Phonebook {
 			try {
 				choice = input.nextInt();
 				VaildInput = true;
+
 			}catch(java.util.InputMismatchException e){
 				System.out.println("Invaild choice, please re-enter a vaild choice: ");
 				input.nextLine();
@@ -203,6 +209,7 @@ public class Phonebook {
                 System.out.println("Contact not found!");
                 break;
 			
+				
 			//Search by Birthday.
 			case 5 : 
 				
@@ -235,7 +242,9 @@ public class Phonebook {
 		
 	}
 	
-	//////////////////////////
+
+
+	//================================
 	public boolean isValidDate(String Date, String format){
 		SimpleDateFormat var = new SimpleDateFormat(format);
         var.setLenient(false);
@@ -249,7 +258,7 @@ public class Phonebook {
     }
 
 
-	///////////////////////////////////////////
+	//================================
 	public void Remove(String name) {
 	
 		if(ContactList.isEmpty()) {
@@ -273,8 +282,6 @@ public class Phonebook {
 	}
 		
 	
-	
-	///////////////////////////////////////////
 
 	public void PrintAll() {
 		ContactList.findFirst();
@@ -285,8 +292,8 @@ public class Phonebook {
 	}
 
 
-	///////////////////////////////////////////
-
+	
+	//================================
 	public void EventSchedule() {
 
 		try{
@@ -343,8 +350,8 @@ public class Phonebook {
 	}
 
 
-	///////////////////////////////////////////
-
+	
+	//================================
 	public void PrintEventDetails() {
 		
 		if(EventList.isEmpty()) {
@@ -397,8 +404,7 @@ public class Phonebook {
 
 
 
-		///////////////////////////////////////////
-
+	//================================
 	public void PrintContactsByFirstName() {
 	
 		if(ContactList.isEmpty()) {
@@ -406,25 +412,34 @@ public class Phonebook {
 			return;
 		}
 
-		System.out.print("Enter The First Name: ");
-		input.nextLine();
-		String FirstName = input.nextLine();
+		try{
+			System.out.print("Enter The First Name: ");
+			String FirstName = input.nextLine();
 
-		ContactList.findFirst();
+			if(FirstName.length() == 0)
+				throw new MarshalException();
+			
 
-		for (int i = 0; i < ContactList.size ; i++){  
-            if (ContactList.retreive().getContactName().substring(0, FirstName.length()).compareToIgnoreCase(FirstName)==0){ 
-                System.out.println(ContactList.retreive()); 
-            }  
+			ContactList.findFirst();
 
-            ContactList.findNext();  
-        }
-		return;
+			for (int i = 0; i < ContactList.size ; i++){  
+				if (ContactList.retreive().getContactName().substring(0, FirstName.length()).compareToIgnoreCase(FirstName)==0){ 
+					System.out.println(ContactList.retreive()); 
+				}  
+
+				ContactList.findNext();  
+			}
+
+			System.out.println("\nContact not found!");
+			
+		}catch(MarshalException ex){
+			System.out.print("\n** Please enter valid name **");
+		}
 		
 	}
 
-		///////////////////////////////////////////
-
+		
+	//================================
 	public void PrintOrdredEvents() {
 
 		EventList.findFirst();
@@ -434,7 +449,5 @@ public class Phonebook {
 			EventList.findNext();
 		}
 	}
-//		
-//	}
-	//it should be more methods down below, but all of them depends on the nature of the Linked List we are dealing with. so we have to implement it first.
+
 }
