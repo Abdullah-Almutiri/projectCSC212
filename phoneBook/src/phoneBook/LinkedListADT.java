@@ -28,8 +28,9 @@ public class LinkedListADT<T>  implements list<T>{
     public void findNext()throws NullPointerException {
        current = current.getNext();
     }
-
-    public void findpevious()throws NullPointerException {
+	
+    // Rereferencing the currnet to the previous node.
+    public void findprevious()throws NullPointerException {
     	current = current.getPrevious();
     }
 
@@ -37,12 +38,13 @@ public class LinkedListADT<T>  implements list<T>{
     public boolean last()throws NullPointerException {
       return current.getNext() == null;
     }
-
+	
+    // Retrieve the current element.
     public T retreive() {
       return current.getData();
     }
 
-    // Update the element at the current.
+    // Update the current element.
     public void ubdate(T data)throws NullPointerException {
        current.setData(data);
     }
@@ -73,6 +75,8 @@ public class LinkedListADT<T>  implements list<T>{
     	size++;
     	
     }
+	
+    // Adds a new element at the end of the list.
     public void insertAtEnd(T data) {
     	Node<T> newNode = new Node<T>(data);
     	current.setNext(newNode);
