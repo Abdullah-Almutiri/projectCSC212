@@ -30,7 +30,7 @@ public class LinkedListADT<T>  implements list<T>{
     }
 	
     // Rereferencing the currnet to the previous node.
-    public void findprevious()throws NullPointerException {
+    public void findPrevious()throws NullPointerException {
     	current = current.getPrevious();
     }
 
