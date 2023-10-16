@@ -1,5 +1,8 @@
 package phoneBook;
-import java.util.Date;
+import java.util.Date;import 
+java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 
 public class Event implements Comparable<Event> {
 	
@@ -9,6 +12,8 @@ public class Event implements Comparable<Event> {
 	private String eventLocation;
 	Date eventStartDate;
 	Date eventEndDate;
+	LinkedListADT<Event> EventList;
+
 	
 	public Event() { //Default Constructor
 		
@@ -17,6 +22,7 @@ public class Event implements Comparable<Event> {
 		eventContact = null;
 		eventStartDate = new Date();
 		eventEndDate = new Date();
+		EventList = new LinkedListADT<Event>();
 		
 	}
 	
@@ -27,6 +33,7 @@ public class Event implements Comparable<Event> {
 		this.eventStartDate = new Date(eventStartDate);
 		this.eventEndDate = new Date(eventEndDate);
 		this.eventLocation = eventLocation;
+		EventList = new LinkedListADT<Event>();
 		
 	}
 	
@@ -35,6 +42,45 @@ public class Event implements Comparable<Event> {
 	public int compareTo(Event event) throws NullPointerException{
 		return this.eventTitle.compareToIgnoreCase(event.getEventTitle());
 	}
+
+
+	//================================
+	public boolean isValidDate(String Date, String format){
+		SimpleDateFormat var = new SimpleDateFormat(format);
+        var.setLenient(false);
+
+        try{
+            Date date = var.parse(Date);
+			return true; // If parsing is successful, date is valid
+
+        }catch (ParseException ex){
+            return false; // Parsing failed, date is not valid
+        }
+    }
+
+
+	// Return True if has a conflict with exist event
+	public boolean hasConflict(Date startDate, Date endDate){
+
+		if(EventList.isEmpty())
+				return false;
+
+		EventList.findFirst();
+		while(!EventList.last()){
+
+			Date eventStartDate = EventList.retreive().getEventStartDate();
+       		Date eventEndDate = EventList.retreive().getEventEndDate();
+
+			if (eventStartDate.compareTo(startDate) >= 0 && eventEndDate.compareTo(startDate) <= 0) // method compareTo in class Date
+				return true;
+
+
+			EventList.findNext();	
+			}
+		return false;
+	}
+
+
 	public String getEventTitle() {
 		return eventTitle; //bigO(1)
 	}

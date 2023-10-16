@@ -2,7 +2,7 @@ package phoneBook;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import javax.xml.crypto.MarshalException;
@@ -11,7 +11,7 @@ public class Phonebook {
 
 	//The whole Start function represent the main, to start the program just create main class and call the Start function.
 	static LinkedListADT<Contact> ContactList = new LinkedListADT<Contact>();
-	static LinkedListADT<Event> EventList = new LinkedListADT<Event>();
+	static Event Event = new Event();
 
 	static Scanner input = new Scanner(System.in);
 
@@ -75,7 +75,8 @@ public class Phonebook {
 
 			ContactList.insert(C);
 		
-			
+			System.out.println("\n Contact added successfully");
+
 		
 		}catch(IllegalArgumentException IAE){
 			System.out.println(" \n*** The phone number is not valid. ***  ");
@@ -244,18 +245,6 @@ public class Phonebook {
 	
 
 
-	//================================
-	public boolean isValidDate(String Date, String format){
-		SimpleDateFormat var = new SimpleDateFormat(format);
-        var.setLenient(false);
-
-        try{
-            Date date = var.parse(Date);
-            return true; // If parsing is successful, date is valid
-        }catch (ParseException ex){
-            return false; // Parsing failed, date is not valid
-        }
-    }
 
 
 	//================================
@@ -309,44 +298,61 @@ public class Phonebook {
 			System.out.print("* Enter event end date(MM/DD/YYYY HH:MM): ");
 			String endDate = input.nextLine();
 
-			System.out.print("* Enter event location: ");
+			System.out.print(" Enter event location: ");
 			String location = input.nextLine();
 
+			
 			// To ensure the user fill the lables.
 			if(title.length() == 0 || name.length() == 0 || startDate.length() == 0 || endDate.length() == 0  )
-				throw new Exception();
+				throw new InputMismatchException();
 		
-			if (!isValidDate(startDate, "MM/dd/yyyy HH:mm") || !isValidDate(endDate, "MM/dd/yyyy HH:mm")) {
+			if (!Event.isValidDate(startDate, "MM/dd/yyyy HH:mm") || !Event.isValidDate(endDate, "MM/dd/yyyy HH:mm")) {
 				System.out.println("\nInvalid date format. you have to follow this format MM/DD/YYYY HH:MM ");
 				return;
 			}
+			
 		
 			Event event = new Event(title,name,startDate,endDate,location);
 			
-			if(!EventList.isEmpty()) {
 			
-				EventList.findFirst();
-				
-				while(event.compareTo(EventList.retreive())>=0) {
-					if(event.compareTo(EventList.retreive())==0) {
-						System.out.println("\nError : Event Already Exists");
+				SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+			
+				Date startDate1 = format.parse(startDate);
+				Date endDate1 = format.parse(endDate);
+			
+				if(event.hasConflict(startDate1, endDate1)) {
+					throw new Exception();
+				}
+			
+			if(!Event.EventList.isEmpty()) {
+			
+				Event.EventList.findFirst();
+
+				while(event.compareTo(Event.EventList.retreive())>=0) {
+					if(event.compareTo(Event.EventList.retreive())==0) {
+						System.out.println("\n Event Already Exists");
 						return;
 					}
-					else if(!EventList.last()) 
-						EventList.findNext();
+					else if(!Event.EventList.last()) 
+						Event.EventList.findNext();
 
 					else {
-						EventList.insertAtEnd(event);
+						Event.EventList.insertAtEnd(event);
 						return;
 					}
 				}
 			}
-			
-			EventList.insert(event);
+
+			Event.EventList.insert(event);
+			System.out.println("\n Event Ssheduled successfully");
+
+
+	}catch(InputMismatchException e){
+		System.out.println(" \n*** title, name, startDate, and, endDate are required. ***  ");
 
 	}catch(Exception ex){
-		System.out.println(" \n*** title, name, startDate, and, endDate are required. ***  ");
-	}
+			System.out.println(" \n*** you have an event at this date ***  ");
+}
 	}
 
 
@@ -354,12 +360,12 @@ public class Phonebook {
 	//================================
 	public void PrintEventDetails() {
 		
-		if(EventList.isEmpty()) {
+		if(Event.EventList.isEmpty()) {
 			System.out.println("Your event list is empty!, there is nothing to search.");
 			return;
 		}
 
-		EventList.findFirst();
+		Event.EventList.findFirst();
 		System.out.println("Enter search citeria:");
 		System.out.println("1. Contact Name");
 		System.out.println("2. Event Title");
@@ -373,13 +379,13 @@ public class Phonebook {
 		case 1: 
 			System.out.print("Enter Contact Name: "); String contactName=input.nextLine();
 			
-			for (int i = 0; i < EventList.size ; i++){
-	            if (EventList.retreive().getEventTitle().compareToIgnoreCase(contactName)==0){ 
-	                System.out.println(EventList.retreive());  
+			for (int i = 0; i < Event.EventList.size ; i++){
+	            if (Event.EventList.retreive().getEventTitle().compareToIgnoreCase(contactName)==0){ 
+	                System.out.println(Event.EventList.retreive());  
 	                return; 
 	            }  
 
-	            EventList.findNext();  
+	            Event.EventList.findNext();  
 	        }
 	        return;
 
@@ -388,13 +394,13 @@ public class Phonebook {
 			System.out.print("Enter Event Title: "); 
 			String eventTitle=input.nextLine();
 
-			for (int i = 0; i < EventList.size ; i++){
-	            if (EventList.retreive().getEventTitle().compareToIgnoreCase(eventTitle)==0){ 
-	                System.out.println(EventList.retreive());  
+			for (int i = 0; i < Event.EventList.size ; i++){
+	            if (Event.EventList.retreive().getEventTitle().compareToIgnoreCase(eventTitle)==0){ 
+	                System.out.println(Event.EventList.retreive());  
 	                return; 
 	            }  
 
-	            EventList.findNext();  
+	            Event.EventList.findNext();  
 	        }
 
 			System.out.println("Event not found!");
@@ -442,11 +448,11 @@ public class Phonebook {
 	//================================
 	public void PrintOrdredEvents() {
 
-		EventList.findFirst();
+		Event.EventList.findFirst();
 
-		for(int i=0;i<EventList.size;i++) {
-			System.out.println(EventList.retreive());
-			EventList.findNext();
+		for(int i=0;i<Event.EventList.size;i++) {
+			System.out.println(Event.EventList.retreive());
+			Event.EventList.findNext();
 		}
 	}
 
