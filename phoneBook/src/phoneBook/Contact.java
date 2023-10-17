@@ -9,8 +9,8 @@ public class Contact implements Comparable<Contact>  {
 	private String notes;
 	private String birthday;
 	
+	
 	public Contact(String contactName, String phoneNumber,String birthday, String email, String address, String notes) {
-
 		this.name = contactName;
 		this.phoneNumber = phoneNumber;
 		this.emailAddress = email;
@@ -87,12 +87,14 @@ public class Contact implements Comparable<Contact>  {
 	
 	@Override
 	public String toString() {
-		return "\nName: "         + name + 
-			   "\nPhoneNumber: "  + phoneNumber + 
-			   "\nEmailAddress: " + emailAddress + 
-			   "\nAddress: "      + address + 
-			   "\nBirthDay: "     + birthday + 
-			   "\nNotes: "        + notes;
+		return 	"\n***********************************"+
+				"\nName: "         + name + 
+				"\nPhoneNumber: "  + phoneNumber + 
+				"\nEmailAddress: " + emailAddress + 
+				"\nAddress: "      + address + 
+				"\nBirthDay: "     + birthday + 
+				"\nNotes: "        + notes +
+				"\n***********************************";
 	}//Prints contact details
 	
 	
