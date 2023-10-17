@@ -6,7 +6,7 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import javax.xml.crypto.MarshalException;
-public class Phonebook {
+public class PhoneBook {
 
 
 	//The whole Start function represent the main, to start the program just create main class and call the Start function.
@@ -26,7 +26,20 @@ public class Phonebook {
 
 			System.out.print("* Enter the contact's phone number: ");
 			String Number = input.nextLine();
-	
+			if(!ContactList.isEmpty()) {
+				
+				ContactList.findFirst();
+				
+				for(int i=0;i<ContactList.size;i++) {
+					if( ContactList.retreive().getPhoneNumber().compareToIgnoreCase(Number)==0 ||
+						ContactList.retreive().getContactName().compareToIgnoreCase(Name)==0) {
+						System.out.println("\n*** ERROR: Contact Already Exists! ***");
+						return;
+					}
+					ContactList.findNext();
+				}
+				
+			}
 			System.out.print("Enter the contact's email address: ");
 			String EmailAddress = input.nextLine();
 
@@ -49,7 +62,7 @@ public class Phonebook {
 				throw new Exception();	
 
 
-
+//			Contact C = new Contact();
 			Contact C = new Contact(Name,Number,EmailAddress,Address,BirthDay,Notes);
 
 			
@@ -57,39 +70,36 @@ public class Phonebook {
 				
 				ContactList.findFirst();
 				
-				while(C.compareTo(ContactList.retreive()) >= 0) {
+				while(C.compareTo(ContactList.retreive()) > 0) {
 					
-					if(C.compareTo(ContactList.retreive()) == 0) {
-						System.out.println("\nContact Already Exists");
-						return;
-					}
-					else if(!ContactList.last()) 
-					ContactList.findNext();
+					if(!ContactList.last()) 
+						ContactList.findNext();
 
 					else {
 						ContactList.insertAtEnd(C);
+						System.out.println(" \n* Contact added successfully *");
 						return;
 					}
 				}
 			}
 
 			ContactList.insert(C);
-		
-			System.out.println("\n Contact added successfully");
+			System.out.println(" \n* Contact added successfully *");
 
 		
 		}catch(IllegalArgumentException IAE){
 			System.out.println(" \n*** The phone number is not valid. ***  ");
 
 
-		}catch(Exception ex){
+		}
+		catch(Exception ex){
 			System.out.println(" \n*** you have to fill the required lables (*). ***  ");
 	}
 	
 	
 	}
-	
 
+	
 	
 	//================================
 	public void Search() {
@@ -104,8 +114,8 @@ public class Phonebook {
 			System.out.println("3. Email Address");
 			System.out.println("4. Address");
 			System.out.println("5. Birthday");
-			System.out.println("6. Cancel\n");
-			System.out.print("Enter your chioce: ");
+			System.out.println("6. Cancel");
+			System.out.print("\nEnter your chioce: ");
 
 
 		do{
@@ -122,7 +132,7 @@ public class Phonebook {
 		}while( !VaildInput && choice > 0 && choice < 9 ) ;
 
 		if (ContactList.isEmpty()) {
-            System.out.println("Contact not found!");
+            System.out.println("* Contact not found! *");
             return;
             }
 
@@ -136,7 +146,7 @@ public class Phonebook {
 			//Search by Name.	
 			case 1 : 
 				
-				System.out.print("Enter the contact's name: ");  
+				System.out.print("* Enter the contact's name: ");  
                 String name = input.nextLine();  
 
                 for (int i = 0; i < ContactList.size ; i++){  
@@ -149,12 +159,12 @@ public class Phonebook {
                     ContactList.findNext();  
                 }
 
-                System.out.println("Contact not found!");
+                System.out.println("* Contact not found! *");
                 break;
 
 		    //Search by phone number.	
 			case 2 : 
-				System.out.print("Enter the contact's phone Number: ");  
+				System.out.print("* Enter the contact's phone Number: ");  
                 String phoneNumber = input.nextLine();  
 
                 for (int i = 0; i < ContactList.size ; i++){  
@@ -167,13 +177,13 @@ public class Phonebook {
                     ContactList.findNext();  
                 }
 
-                System.out.println("Contact not found!");
+                System.out.println("* Contact not found! *");
                 break;
 
 			//Search by Email Address.	
 			case 3 : 
 			
-				System.out.print("Enter the contact's Email Address: ");  
+				System.out.print("* Enter the contact's Email Address: ");  
                 String email = input.nextLine();  
 				
 				if(email.length() != 0)
@@ -187,13 +197,13 @@ public class Phonebook {
                     ContactList.findNext();  
                 }
 
-                System.out.println("Contact not found!");
+                System.out.println("* Contact not found! *");
                 break;
 			
 			//Search by Address.
 			case 4 : 
 
-				System.out.print("Enter the contact's Address: ");  
+				System.out.print("* Enter the contact's Address: ");  
                 String address = input.nextLine();  
 
               	if(address.length() != 0)
@@ -207,14 +217,14 @@ public class Phonebook {
                     ContactList.findNext();  
                 }
 
-                System.out.println("Contact not found!");
+                System.out.println("* Contact not found! *");
                 break;
 			
 				
 			//Search by Birthday.
 			case 5 : 
 				
-				System.out.print("Enter the contact's birth day: ");  
+				System.out.print("* Enter the contact's birth day: ");  
                 String birthDay = input.nextLine();  
 
 				if(birthDay.length() != 0)
@@ -228,7 +238,7 @@ public class Phonebook {
                     ContactList.findNext();  
                 }
 
-                System.out.println("Contact not found!");
+                System.out.println("* Contact not found! *");
                 break;
 			
 			// Exit
@@ -243,24 +253,34 @@ public class Phonebook {
 		
 	}
 	
-
-
-
-
-	//================================
-	public void Remove(String name) {
 	
+	
+	//================================
+	public void Remove() {
+		System.out.print("Enter Contact's Name: ");
+		String name = input.nextLine();
 		if(ContactList.isEmpty()) {
-			System.out.println("\nContact not found.");
+			System.out.println("\n *** Contact not found! ***");
 			return;
 			}
 
 		ContactList.findFirst();
 		for(int i=0;i<ContactList.size;i++) {
 			if(ContactList.retreive().getContactName().compareToIgnoreCase(name)==0) {
-//				System.out.println("Contact Info:");
+				
 				ContactList.remove();
-				System.out.println("Contact is deleted.");
+				System.out.println(" * Contact is deleted. *");
+				
+				Event.EventList.findFirst();
+				int numberOfRemovedEvents=0,size = Event.EventList.size;
+				for(int j=0;j<size;j++) {
+					if(Event.EventList.retreive().getEventContact().compareToIgnoreCase(name)==0) {
+						Event.EventList.remove();
+						numberOfRemovedEvents++;
+					}
+					Event.EventList.findNext();
+				}
+				System.out.println(" * " + numberOfRemovedEvents + " Event\\s Connected to this contact removed *");
 				return;
 			}
 
@@ -284,45 +304,85 @@ public class Phonebook {
 	
 	//================================
 	public void EventSchedule() {
+		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+		
+		
 
 		try{
+			//request data from the user
 			System.out.print("* Enter event title: ");
 			String title = input.nextLine();
 
 			System.out.print("* Enter contact name: ");
 			String name = input.nextLine();
-
+			
+			
 			System.out.print("* Enter event start date(MM/DD/YYYY HH:MM): ");
 			String startDate = input.nextLine();
-
+			Date startDateCheck = format.parse(startDate);
+			
 			System.out.print("* Enter event end date(MM/DD/YYYY HH:MM): ");
 			String endDate = input.nextLine();
-
+			Date endDateCheck = format.parse(endDate);
+			
+			
 			System.out.print(" Enter event location: ");
 			String location = input.nextLine();
 
 			
-			// To ensure the user fill the lables.
-			if(title.length() == 0 || name.length() == 0 || startDate.length() == 0 || endDate.length() == 0  )
-				throw new InputMismatchException();
-		
-			if (!Event.isValidDate(startDate, "MM/dd/yyyy HH:mm") || !Event.isValidDate(endDate, "MM/dd/yyyy HH:mm")) {
-				System.out.println("\nInvalid date format. you have to follow this format MM/DD/YYYY HH:MM ");
-				return;
-			}
-			
-		
-			Event event = new Event(title,name,startDate,endDate,location);
-			
-			
-				SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm");
-			
-				Date startDate1 = format.parse(startDate);
-				Date endDate1 = format.parse(endDate);
-			
-				if(event.hasConflict(startDate1, endDate1)) {
-					throw new Exception();
+			//Input checking
+			{
+				
+				
+				//1.To ensure the user fill the labels.
+				if(title.length() == 0 || name.length() == 0 || startDate.length() == 0 || endDate.length() == 0  )
+					throw new InputMismatchException();
+					
+				
+				//2.Checking if contact exist
+				if(!ContactList.isEmpty()) {	
+					ContactList.findFirst();	
+					for(int i=0;i<ContactList.size;i++) {
+						if(ContactList.retreive().getContactName().compareToIgnoreCase(name)==0) break;
+						else if(ContactList.last()) {
+							System.out.println("\n *** ERROR: Contact Does Not Exist! ***");
+							return;
+						}	
+						ContactList.findNext();
+					}	
 				}
+				else {
+					System.out.println("\n *** ERROR: Contact Does Not Exist! ***");
+					return;
+				}
+				
+				
+				//3.Comparing the date input with the acceptable format and range
+				if( endDateCheck.compareTo(startDateCheck)<=0 || 
+						startDateCheck.compareTo(new Date(System.currentTimeMillis()))<=0 ||
+						!Event.isValidDate(startDate, "MM/dd/yyyy HH:mm") ||
+						!Event.isValidDate(endDate, "MM/dd/yyyy HH:mm")) {
+					
+					System.out.println(" *** Please consider the following rules                                  ***");
+					System.out.println(" *** 1 - The start date cannot be in the past (you are not time traveler) ***");
+					System.out.println(" *** 2 - The end date comes after the start date                          ***");
+					System.out.println(" *** 3 - You have to follow this format MM/DD/YYYY HH:MM                  ***");
+					return;
+				}
+				
+				//4.Checking for conflicts in time
+				if(Event.hasConflict(startDateCheck, endDateCheck)) {
+					System.out.println("\n ***ERROR: you have an event at this date ***");
+					System.out.println(Event.EventList.retreive().toString()); //Print event that caused the conflict
+					return;
+				}
+			
+				
+			}//Input checking is done.
+			
+			
+			
+			Event event = new Event(title,name,startDate,endDate,location);
 			
 			if(!Event.EventList.isEmpty()) {
 			
@@ -338,21 +398,26 @@ public class Phonebook {
 
 					else {
 						Event.EventList.insertAtEnd(event);
+						System.out.println("\n * Event Ssheduled successfully *");
 						return;
 					}
 				}
 			}
 
 			Event.EventList.insert(event);
-			System.out.println("\n Event Ssheduled successfully");
+			System.out.println("\n * Event Ssheduled successfully *");
 
 
-	}catch(InputMismatchException e){
-		System.out.println(" \n*** title, name, startDate, and, endDate are required. ***  ");
-
-	}catch(Exception ex){
-			System.out.println(" \n*** you have an event at this date ***  ");
-}
+		}catch(InputMismatchException e){
+			System.out.println("\n ***ERROR: title, name, startDate, and, endDate are required. ***");
+	
+		}catch(NullPointerException NL) {
+			System.out.println(NL);
+			
+		}catch(Exception ex){
+			System.out.println(ex);
+			
+		}
 	}
 
 
@@ -412,6 +477,8 @@ public class Phonebook {
 
 	//================================
 	public void PrintContactsByFirstName() {
+		
+		boolean found=false;
 	
 		if(ContactList.isEmpty()) {
 			System.out.println("Your contact list is empty!, there is nothing to search.");
@@ -428,18 +495,20 @@ public class Phonebook {
 
 			ContactList.findFirst();
 
-			for (int i = 0; i < ContactList.size ; i++){  
-				if (ContactList.retreive().getContactName().substring(0, FirstName.length()).compareToIgnoreCase(FirstName)==0){ 
+			for (int i = 0; i < ContactList.size ; i++){
+				if (ContactList.retreive().getContactName().length()>=FirstName.length()&&
+					ContactList.retreive().getContactName().substring(0, FirstName.length()).compareToIgnoreCase(FirstName)==0){ 
+					found=true;
 					System.out.println(ContactList.retreive()); 
 				}  
 
 				ContactList.findNext();  
 			}
 
-			System.out.println("\nContact not found!");
+			if(!found) System.out.println("\n *** Contact not found! ***");
 			
 		}catch(MarshalException ex){
-			System.out.print("\n** Please enter valid name **");
+			System.out.print("\n *** Please enter valid name ***");
 		}
 		
 	}
@@ -447,13 +516,17 @@ public class Phonebook {
 		
 	//================================
 	public void PrintOrdredEvents() {
-
+		
+		if(Event.EventList.isEmpty()) 
+			System.out.println(" * There is no events to show *");
+		
+		
 		Event.EventList.findFirst();
-
 		for(int i=0;i<Event.EventList.size;i++) {
 			System.out.println(Event.EventList.retreive());
 			Event.EventList.findNext();
 		}
 	}
+	
 
 }
