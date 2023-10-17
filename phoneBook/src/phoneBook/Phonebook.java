@@ -3,7 +3,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-public class PhoneBook {
+
+public class Phonebook {
 
 	
 	
@@ -135,6 +136,8 @@ public class PhoneBook {
 	//================================
 	public void Search() {
 		int criteria;
+	
+	
 		try {
 			//Receiving Inputs
 			{
@@ -152,7 +155,8 @@ public class PhoneBook {
 			{
 				criteria = input.nextInt();										//it will throw InputMismatchException if the entered value isn't an integer
 				input.nextLine();													//when entering the value x, we click "enter", this field catches that "enter" so it wont disturb the program.
-				if(criteria<1 || criteria>6) throw new InputMismatchException();	//to ensure the entered value in the acceptable range
+				if(criteria<1 || criteria>6) 
+				throw new InputMismatchException();	//to ensure the entered value in the acceptable range
 			}
 
 			
@@ -303,6 +307,77 @@ public class PhoneBook {
 			
 		}
 	}
+
+
+	 public  void search() {
+        
+        if (ContactList.isEmpty()) {
+            System.out.println("Your phonebook is empty!");
+            return;
+        }
+
+
+        System.out.println("By which criteria do you want to search?\n ");
+            System.out.println("1. Name: ");
+            System.out.println("2. Phone Number: ");
+            System.out.println("3. Email Address: ");
+            System.out.println("4. Address: ");
+            System.out.println("5. Birthday: ");
+            System.out.print("Enter the field to search by: ");
+
+            Scanner in = new Scanner (System.in);
+            int choice;
+
+            if (input.hasNextInt()){
+                choice = input.nextInt();
+                input.nextLine();
+            }else {
+                System.out.println("wrong");
+                return;
+            }
+        //int choice = in.nextInt();
+        //input.nextLine();
+
+
+
+        System.out.print("\nEnter the search criteria: ");
+        String searchCriteria = input.nextLine();
+
+        boolean found = false;
+
+        ContactList.findFirst();
+
+        for (int i = 0; i < ContactList.size; i++) {
+          
+            Contact contact = ContactList.retreive();
+          
+            switch (choice) {
+                case 1:
+                    found = ContactList.retreive().getContactName().compareTo(searchCriteria) == 0;
+                    break;
+                case 2:
+                    found = ContactList.retreive().getPhoneNumber().compareTo(searchCriteria) == 0;
+                    break;
+                case 3:
+                    found = ContactList.retreive().getEmail().compareTo(searchCriteria) == 0;
+                    break;
+                case 4:
+                    found = ContactList.retreive().getAddress().compareTo(searchCriteria) == 0;
+                    break;
+                case 5:
+
+                    found = ContactList.retreive().getBirthday().compareTo(searchCriteria) == 0;
+                    break;
+            }
+
+            if (found) {
+                System.out.println("\nContact found!\n");
+                System.out.println(contact);
+                break; // Stop searching after the first match.
+            }
+            ContactList.findNext();
+        }
+    }
 	
 	
 	
@@ -400,7 +475,10 @@ public class PhoneBook {
 			//create date format so we can save and compare date safely
 			SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm");
 			
-			
+			if(ContactList.isEmpty()) {
+				System.out.println("\n *** you have to add at least one contact ***");
+				return;
+		}
 			//request data from the user
 			System.out.print("* Enter event title: ");
 			String title = input.nextLine();
@@ -433,18 +511,19 @@ public class PhoneBook {
 				
 				//2.Checking if contact exist
 				if(!ContactList.isEmpty()) {	
+
 					ContactList.findFirst();	
 					for(int i=0;i<ContactList.size;i++) {
 						if(ContactList.retreive().getContactName().compareToIgnoreCase(name)==0) break;
 						else if(ContactList.last()) {
-							System.out.println("\n *** ERROR: Contact Does Not Exist! ***");
+							System.out.println("\n *** Contact Does Not Exist! ***");
 							return;
 						}	
 						ContactList.findNext();
 					}	
 				}
 				else {
-					System.out.println("\n *** ERROR: Contact Does Not Exist! ***");
+					System.out.println("\n *** Contact Does Not Exist! ***");
 					return;
 				}
 				
@@ -518,10 +597,10 @@ public class PhoneBook {
 			System.out.println("\n ***ERROR: title, name, startDate, and, endDate are required. ***");
 	
 		}catch(NullPointerException NPE) {
-			System.out.println(NPE);
+			System.out.println("somthing went wrong!. please try agin");
 			
 		}catch(Exception E){
-			System.out.println(E);
+			System.out.println("somthing went wrong!. please try agin");
 			
 		}
 	}
@@ -619,7 +698,7 @@ public class PhoneBook {
 	
 	//================================
 	//================================
-	public void PrintContactsByFirstName() {
+	public void PrintContactListByFirstName() {
 		
 		try{
 			
@@ -647,7 +726,7 @@ public class PhoneBook {
 			for (int i = 0; i < ContactList.size ; i++){
 				
 				
-				//if the current name contains letter at much as the input name, check if they are the same and print (this field check for contacts that have only first name)
+				//if the current name contains letter at much as the input name, check if they are the same and print (this field check for ContactList that have only first name)
 				if (ContactList.retreive().getContactName().length()==FirstName.length()&&
 					ContactList.retreive().getContactName().substring(0, FirstName.length()).compareToIgnoreCase(FirstName)==0){ 
 					found=true;
@@ -655,7 +734,7 @@ public class PhoneBook {
 				} 
 				
 				
-				/***if the current name contains letter more than input name, add to the entered name " " space and compare it with the current name (this field check for contacts that have more than the first name
+				/***if the current name contains letter more than input name, add to the entered name " " space and compare it with the current name (this field check for ContactList that have more than the first name
 				 	actually the main goal for this section is to eliminate  first names that share their first part with the enter name
 				 	for an example assume the first name i am looking for is "Mesh", this section will eliminate names such as "Meshal" and look for only names that starts with Mesh then " " (space) ***/
 				else if (ContactList.retreive().getContactName().length()>FirstName.length()&&

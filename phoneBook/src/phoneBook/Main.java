@@ -48,12 +48,12 @@ public class Main {
 				break;
 					
 			case 2 :
-				e.Search();
+				e.search();
 				break;
 				
 			case 3 :
 				System.out.print("Enter contact's name: ");
-				e.Remove(input.nextLine());
+				e.Remove();
 				break;
 
 			case 4 :
@@ -65,7 +65,7 @@ public class Main {
 				break;
 
 			case 6 :
-				e.PrintContactsByFirstName();
+				e.PrintContactListByFirstName();
 				break;
 
 			case 7 :
