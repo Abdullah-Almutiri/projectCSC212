@@ -1,7 +1,7 @@
 package phoneBook;
 
 
-public class LinkedListADT<T>  implements list<T>{
+public class LinkedListADT<T>  {
     private Node<T> head;
     private Node<T> current;
     public int size;
@@ -61,15 +61,11 @@ public class LinkedListADT<T>  implements list<T>{
     		head=newNode;
     	}
     	else{
-    		/*Node<T>	previous = current.getPrevious();
+    		Node<T>	previous = current.getPrevious();
     		newNode.setNext(current);
     		newNode.setPrevious(previous);
     		previous.setNext(newNode);
-    		current.setPrevious(newNode);*/
-            newNode.setNext(current.getNext());
-            current.getNext().setPrevious(newNode);
-            newNode.setPrevious(current);
-            current.setNext(newNode);
+    		current.setPrevious(newNode);
     	}
     	current = newNode;
     	size++;
@@ -81,19 +77,31 @@ public class LinkedListADT<T>  implements list<T>{
     	Node<T> newNode = new Node<T>(data);
     	current.setNext(newNode);
 		newNode.setPrevious(current);
+		current = newNode;
 		size++;
     }
 
     // Deletes the element at the current.
     public void remove(){
-
+    	//There is nothing to remove in this case
         if (isEmpty())
             return;
 
+        
+        //If the element is the first
         if(current == head) {
-            head = head.getNext();
-            head.setPrevious(null);
-            }
+        	//If the last has more than 1 element
+        	if(!last()) {
+        		head=head.getNext();
+        		head.setPrevious(null);
+        	}
+        	
+        	//If the list has only 1 element
+        	else {
+        		head=head.getNext();
+        	}
+        }	
+        
         	
         else if(last()) {
         	Node<T> previous = current.getPrevious();
@@ -101,6 +109,7 @@ public class LinkedListADT<T>  implements list<T>{
         	current.setPrevious(null);
         	current=previous; 
         }
+        
       
         else{
             Node<T> previous = current.getPrevious();
