@@ -14,7 +14,7 @@ public class Phonebook {
 
 
 
-	//================================
+	// add a new unique contact
 	public void AddContact() {
 		
 		//Input fields and input validation section
@@ -48,7 +48,7 @@ public class Phonebook {
 					
 					ContactList.findFirst();
 					
-					for(int i=0;i<ContactList.size;i++) {
+					for(int i=0;i<ContactList.size;i++) { 
 						if( ContactList.retreive().getPhoneNumber().compareToIgnoreCase(Number)==0 ||
 							ContactList.retreive().getContactName().compareToIgnoreCase(Name)==0) {
 							
@@ -115,15 +115,12 @@ public class Phonebook {
 
 
 		}catch(InputMismatchException IME){
-			
 			System.out.println(IME);
 			
 		}catch(NullPointerException NPE) {
-			
 			System.out.println(NPE);
 			
 		}catch(Exception E){
-			
 			System.out.println(E);
 			
 		}
@@ -131,7 +128,6 @@ public class Phonebook {
 	
 	}
 
-	
 	
 	//Search for contact  
 	 public  void search() {
@@ -160,9 +156,7 @@ public class Phonebook {
                 System.out.println("wrong");
                 return;
             }
-        //int choice = in.nextInt();
-        //input.nextLine();
-
+     
 
 
         System.out.print("\nEnter the search criteria: ");
@@ -172,7 +166,7 @@ public class Phonebook {
 
         ContactList.findFirst();
 
-        for (int i = 0; i < ContactList.size; i++) { // O(n)
+        for (int i = 0; i < ContactList.size; i++) { 
           
             Contact contact = ContactList.retreive();
           
@@ -206,8 +200,7 @@ public class Phonebook {
     }
 	
 	
-	
-	//================================
+	// removes the contact by name and any Associated events
 	public void Remove() {
 	
 		try{
@@ -241,7 +234,8 @@ public class Phonebook {
 				if(found){
 					Event.EventList.findFirst();
 
-					int numberOfRemovedEvents = 0 ,size = Event.EventList.size; //we may have to delete multiple events which will decrease the size, to make sure we check the whole list. we have to save the size in a variable so it wont change during the loop
+					int numberOfRemovedEvents = 0 ,size = Event.EventList.size; //we may have to delete multiple events which will decrease the size, 
+																				//to make sure we check the whole list. we have to save the size in a variable so it wont change during the loop
 					//checking the whole EventList
 					for(int j=0;j<size;j++) {
 						
@@ -271,10 +265,7 @@ public class Phonebook {
 		}
 	}
 		
-
-
-	//================================
-	//================================
+	// Schedules an event with an existing contact
 	public void EventSchedule() {
 		
 		try{
@@ -308,8 +299,6 @@ public class Phonebook {
 			
 			//Input checking
 			{
-				
-				
 				//1.To ensure the user fill the labels.
 				if(title.length() == 0 || name.length() == 0 || startDate.length() == 0 || endDate.length() == 0  )
 					throw new InputMismatchException();
@@ -349,7 +338,7 @@ public class Phonebook {
 				
 				//4.Checking for conflicts in time
 				if(Event.hasConflict(startDateCheck, endDateCheck)) {
-					System.out.println("\n ***ERROR: you have an event at this date ***");
+					System.out.println("\n *** you have an event at this date ***");
 					System.out.println(Event.EventList.retreive().toString()); //Print event that caused the conflict
 					return;
 				}
@@ -360,8 +349,6 @@ public class Phonebook {
 			
 			//start scheduling the event
 			{
-				
-				
 				Event event = new Event(title,name,startDate,endDate,location);
 				
 				if(!Event.EventList.isEmpty()) {
@@ -389,13 +376,10 @@ public class Phonebook {
 							return;
 						}
 					}
-				}
-				
-				
+				}	
 				Event.EventList.insert(event);
 				System.out.println("\n * Event Ssheduled successfully *");
-				
-				
+
 			}
 
 
@@ -403,18 +387,15 @@ public class Phonebook {
 			System.out.println("\n ***ERROR: title, name, startDate, and, endDate are required. ***");
 	
 		}catch(NullPointerException NPE) {
-			System.out.println("somthing went wrong!. please try agin");
+			System.out.println("somthing went wrong!. please try agin!");
 			
 		}catch(Exception E){
-			System.out.println("somthing went wrong!. please try agin");
+			System.out.println("somthing went wrong!. please try agin!");
 			
 		}
 	}
 
-
-	
-	//================================
-	//================================
+	// print the event details
 	public void PrintEventDetails() {
 		
 		try {
@@ -431,93 +412,76 @@ public class Phonebook {
 			System.out.println("Enter search citeria:");
 			System.out.println("1. Contact Name");
 			System.out.println("2. Event Title");
+			System.out.print(" \nEnter your choice: ");
 
+			int choice;
 
-			int choice = input.nextInt();
-			input.nextLine();                              //when entering the value x, we click "enter", this field catches that "enter" so it wont disturb the program.
+            if (input.hasNextInt()){
+                choice = input.nextInt();
+                input.nextLine(); //when entering the value x, we click "enter", this field catches that "enter" so it wont disturb the program.
+            }else {
+                System.out.println("wrong");
+                return;
+            }
 
-			switch(choice) {
+			System.out.print("\nEnter the search criteria: ");
+			String searchCriteria = input.nextLine();
+	
+			 
+			boolean found = false;
 
-			case 1: 
-				{
-					System.out.print("Enter Contact Name: "); String contactName=input.nextLine();
+			for (int i = 0; i < Event.EventList.size ; i++){
+				
+				switch(choice) {
+
+					case 1: 
+							//check if current event's contact matches the entered contact 
+							found = Event.EventList.retreive().getEventContact().compareToIgnoreCase(searchCriteria) == 0;
+							break;
+					case 2 :
+							//check if current event's title matches the entered title 
+							found = Event.EventList.retreive().getEventTitle().compareToIgnoreCase(searchCriteria) == 0;
+							break;
+						}
+						if (found) {
+							System.out.println("\nContact found!\n");
+							System.out.println(Event.EventList.retreive());
+							return; // Stop searching after the first match.
+					}
+					Event.EventList.findNext(); 
 					
-					for (int i = 0; i < Event.EventList.size ; i++){
-						
-						//check if current event's contact matches the entered contact 
-			            if (Event.EventList.retreive().getEventContact().compareToIgnoreCase(contactName)==0){ 
-			            	
-			                System.out.println(Event.EventList.retreive());  
-			                return; 
-			                
-			            }  
-			            //move current to the next event
-			            Event.EventList.findNext();  
-			        }
-					System.out.println(" * Event not found! *");
-			        return;
 				}
 
+						System.out.println(" * Event not found! *");
+						return;
 
-			case 2 :
-				{
-					System.out.print("Enter Event Title: "); 
-					String eventTitle=input.nextLine();
-					
-					for (int i = 0; i < Event.EventList.size ; i++){
-						
-						//check if current event's title matches the entered title 
-			            if (Event.EventList.retreive().getEventTitle().compareToIgnoreCase(eventTitle)==0){ 
-			            	
-			                System.out.println(Event.EventList.retreive());  
-			                return; 
-			                
-			            }  
-			            //move current to the next event
-			            Event.EventList.findNext();  
-			        }
-
-					System.out.println(" * Event not found! *");
-			        return;
-				}
-				
-				
-			}
 			
 		}catch(InputMismatchException IME) {
+			System.out.println("somthing went wrong! Input Mismatch . please try agin");
 			
-			System.out.println(IME);
-			
-		}catch(NullPointerException NPE) {
-			
-			System.out.println(NPE);
+		 }catch(NullPointerException NPE) {
+			System.out.println("somthing went wrong!. please try agin");
 			
 		}catch(Exception E) {
-			
-			System.out.println(E);
+			System.out.println("somthing went wrong!. please try agin");
 			
 		}
-		
 	}
 
-
-	
-	//================================
-	//================================
+		
+	// print the contacts by first name
 	public void PrintContactListByFirstName() {
 		
 		try{
 			
 			//if we found any contact, we will remark it to true
 			boolean found=false;
-			
-			
+	
 			if(ContactList.isEmpty()) {
 				System.out.println("Your contact list is empty!, there is nothing to search.");
 				return;
 			}
-			
-			
+	
 			System.out.print("Enter The First Name: ");
 			String FirstName = input.nextLine();
 
@@ -538,13 +502,13 @@ public class Phonebook {
 					found=true;
 					System.out.println(ContactList.retreive()); 
 				} 
-				
-				
+					
 				/***if the current name contains letter more than input name, add to the entered name " " space and compare it with the current name (this field check for ContactList that have more than the first name
 				 	actually the main goal for this section is to eliminate  first names that share their first part with the enter name
 				 	for an example assume the first name i am looking for is "Mesh", this section will eliminate names such as "Meshal" and look for only names that starts with Mesh then " " (space) ***/
-				else if (ContactList.retreive().getContactName().length()>FirstName.length()&&
-					ContactList.retreive().getContactName().substring(0, FirstName.length()+1).compareToIgnoreCase(FirstName+" ")==0){ 
+				
+					else if (ContactList.retreive().getContactName().length()>FirstName.length()&&
+					ContactList.retreive().getContactName().substring(0, FirstName.length()+1).compareToIgnoreCase(FirstName+" " )== 0){ 
 					found=true;
 					System.out.println(ContactList.retreive()); 
 				} 
@@ -555,27 +519,22 @@ public class Phonebook {
 			if(!found) System.out.println("\n *** Contact not found! ***");
 			
 		}catch(NullPointerException NPE){
-			
-			System.out.println(NPE);
+			System.out.println("somthing went wrong!. please try agin");
 			
 		}catch(InputMismatchException IME) {
-			
-			System.out.println(IME);
+			System.out.println("somthing went wrong! Input Mismatch . please try agin");
 			
 		}
 		
 		catch(Exception E) {
-			
-			System.out.println(E);
+			System.out.println("somthing went wrong!. please try agin");
 			
 		}
 		
 	}
 
 	
-	
-	//================================
-	//================================
+	// print the events
 	public void PrintOrdredEvents() {
 		
 		try {
@@ -593,12 +552,10 @@ public class Phonebook {
 			}
 			
 		}catch(NullPointerException NPE) {
+			System.out.println("somthing went wrong!. please try agin");
 			
-			System.out.println(NPE);
-			
-		}catch(Exception E) {
-			
-			System.out.println(E);
+		}catch(Exception E) {	
+			System.out.println("somthing went wrong!. please try agin");
 			
 		}
 	}
