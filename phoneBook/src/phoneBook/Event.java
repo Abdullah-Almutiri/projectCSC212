@@ -66,17 +66,16 @@ public class Event implements Comparable<Event> {
 				return false;
 
 		EventList.findFirst();
-		while(!EventList.last()){
-
+		for(int i=0;i<EventList.size;i++) {
 			Date eventStartDate = EventList.retreive().getEventStartDate();
        		Date eventEndDate = EventList.retreive().getEventEndDate();
 
-			if (eventStartDate.compareTo(startDate) >= 0 && eventEndDate.compareTo(startDate) <= 0) // method compareTo in class Date
+			if ((eventStartDate.compareTo(startDate) <= 0 && eventEndDate.compareTo(startDate) >= 0) ||
+				(eventStartDate.compareTo(endDate) <= 0 && eventEndDate.compareTo(endDate) >= 0)) { // method compareTo in class Date
 				return true;
-
-
-			EventList.findNext();	
 			}
+			EventList.findNext();	
+		}
 		return false;
 	}
 
@@ -124,11 +123,13 @@ public class Event implements Comparable<Event> {
 
 	@Override
 	public String toString() {
-		return  "\neventTitle: " + eventTitle +
+		return  "\n***********************************" +
+				"\neventTitle: " + eventTitle +
 			    "\neventLocation: " + eventLocation +
 			    "\neventContact: " + eventContact + 
 			    "\neventStartDate: " + eventStartDate + 
-			    "\neventEndDate: " + eventEndDate;
+			    "\neventEndDate: " + eventEndDate +
+			    "\n***********************************";
 	}
 	
 	
