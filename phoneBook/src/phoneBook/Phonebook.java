@@ -1,45 +1,67 @@
 package phoneBook;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.Scanner;
-
-import javax.xml.crypto.MarshalException;
 public class PhoneBook {
 
-
-	//The whole Start function represent the main, to start the program just create main class and call the Start function.
+	
+	
 	static LinkedListADT<Contact> ContactList = new LinkedListADT<Contact>();
 	static Event Event = new Event();
-
 	static Scanner input = new Scanner(System.in);
 
 
 
 	//================================
 	public void AddContact() {
-
+		
+		//Input fields and input validation section
 		try{
 			System.out.print("\n* Enter the contact's name: ");
 			String Name = input.nextLine();
 
 			System.out.print("* Enter the contact's phone number: ");
 			String Number = input.nextLine();
-			if(!ContactList.isEmpty()) {
+			
+			
+			//Name and Number are sensitive and required keys, we must ensure that they are valid and unique 
+			{
+				//1.Check if the entered number contains only numbers, it will throw exception otherwise
+				Integer.parseInt(Number); 
 				
-				ContactList.findFirst();
 				
-				for(int i=0;i<ContactList.size;i++) {
-					if( ContactList.retreive().getPhoneNumber().compareToIgnoreCase(Number)==0 ||
-						ContactList.retreive().getContactName().compareToIgnoreCase(Name)==0) {
-						System.out.println("\n*** ERROR: Contact Already Exists! ***");
-						return;
-					}
-					ContactList.findNext();
+				//2.To ensure the user fill the required labels correctly
+				if(Number.length() < 10 || !(Number.charAt(0)=='0')) 
+					throw new IllegalArgumentException();
+				
+				if(Name.length() == 0) {
+					System.out.println("\n *** you have to fill the required lables (*). ***  ");
+					return;
 				}
+						
 				
+				
+				//3.Checking if the contact already exist
+				if(!ContactList.isEmpty()) {
+					
+					ContactList.findFirst();
+					
+					for(int i=0;i<ContactList.size;i++) {
+						if( ContactList.retreive().getPhoneNumber().compareToIgnoreCase(Number)==0 ||
+							ContactList.retreive().getContactName().compareToIgnoreCase(Name)==0) {
+							
+							System.out.println("\n *** ERROR: Contact Already Exists! ***");
+							return;
+							
+						}
+						
+						ContactList.findNext();
+					}
+				}//The contact does not exist, and the phone number is valid. continue the program
 			}
+			
+			
 			System.out.print("Enter the contact's email address: ");
 			String EmailAddress = input.nextLine();
 
@@ -52,49 +74,58 @@ public class PhoneBook {
 			System.out.print("Enter any notes for the contact: ");
 			String Notes = input.nextLine();
 
-
-
-			// To ensure the user fill the required lables correctlly
-			if(Number.length() < 10)
-				throw new IllegalArgumentException();
-
-			if(Name.length() == 0)
-				throw new Exception();	
-
-
-//			Contact C = new Contact();
-			Contact C = new Contact(Name,Number,EmailAddress,Address,BirthDay,Notes);
-
 			
-			if(!ContactList.isEmpty()) {
+			//Adding the contact after the input passed the validation
+			{
+				Contact C = new Contact(Name,Number,EmailAddress,Address,BirthDay,Notes);
 				
-				ContactList.findFirst();
-				
-				while(C.compareTo(ContactList.retreive()) > 0) {
+				if(!ContactList.isEmpty()) {
 					
-					if(!ContactList.last()) 
-						ContactList.findNext();
-
-					else {
-						ContactList.insertAtEnd(C);
-						System.out.println(" \n* Contact added successfully *");
-						return;
+					//set current at first
+					ContactList.findFirst();
+					
+					//search for the right place to add the new contact, the search is alphabetical-base
+					while(C.compareTo(ContactList.retreive()) > 0) {
+						
+						//move current to the next contact if it the current isn't the last
+						if(!ContactList.last()) 
+							ContactList.findNext();
+						
+						//if the current is the last, insertAtEnd
+						else {
+							ContactList.insertAtEnd(C);
+							System.out.println(" \n* Contact added successfully *");
+							return;
+						}
 					}
 				}
-			}
 
-			ContactList.insert(C);
-			System.out.println(" \n* Contact added successfully *");
+				ContactList.insert(C);
+				System.out.println(" \n* Contact added successfully *");
+			}
 
 		
 		}catch(IllegalArgumentException IAE){
-			System.out.println(" \n*** The phone number is not valid. ***  ");
+			
+			System.out.println("\n *** The phone number is not valid                  ***  ");
+			  System.out.println(" *** The phone number must contain only numbers     ***");
+			  System.out.println(" *** The phone number must contains 10 digits only  ***");
+			  System.out.println(" *** The phone number must start with 0             ***");
 
 
+		}catch(InputMismatchException IME){
+			
+			System.out.println(IME);
+			
+		}catch(NullPointerException NPE) {
+			
+			System.out.println(NPE);
+			
+		}catch(Exception E){
+			
+			System.out.println(E);
+			
 		}
-		catch(Exception ex){
-			System.out.println(" \n*** you have to fill the required lables (*). ***  ");
-	}
 	
 	
 	}
@@ -103,212 +134,273 @@ public class PhoneBook {
 	
 	//================================
 	public void Search() {
-		
-		int choice=0;
-		boolean VaildInput = false;
-			
-			System.out.println("\nEnter search criteria:\n");
-
-			System.out.println("1. Name");
-			System.out.println("2. Phone Number");
-			System.out.println("3. Email Address");
-			System.out.println("4. Address");
-			System.out.println("5. Birthday");
-			System.out.println("6. Cancel");
-			System.out.print("\nEnter your chioce: ");
-
-
-		do{
-			try {
-				choice = input.nextInt();
-				VaildInput = true;
-
-			}catch(java.util.InputMismatchException e){
-				System.out.println("Invaild choice, please re-enter a vaild choice: ");
-				input.nextLine();
+		int criteria;
+		try {
+			//Receiving Inputs
+			{
+				System.out.println("\nEnter search criteria:\n");
+				System.out.println("1. Name");
+				System.out.println("2. Phone Number");
+				System.out.println("3. Email Address");
+				System.out.println("4. Address");
+				System.out.println("5. Birthday");
+				System.out.println("6. Cancel");
+				System.out.print("\nEnter your chioce: ");
 			}
 
+			//input validation check
+			{
+				criteria = input.nextInt();										//it will throw InputMismatchException if the entered value isn't an integer
+				input.nextLine();													//when entering the value x, we click "enter", this field catches that "enter" so it wont disturb the program.
+				if(criteria<1 || criteria>6) throw new InputMismatchException();	//to ensure the entered value in the acceptable range
+			}
 
-		}while( !VaildInput && choice > 0 && choice < 9 ) ;
+			
+			//input passed the validation, start searching
+			{
+				if (ContactList.isEmpty()) {
+					System.out.println("* Contact not found! *");
+					return;
+				}
 
-		if (ContactList.isEmpty()) {
-            System.out.println("* Contact not found! *");
-            return;
-            }
+				//set current at first
+				ContactList.findFirst();
+			
+				switch(criteria) {
 
-		input.nextLine();
-		ContactList.findFirst();
+			
+					//Search by Name.	
+					case 1 : 
+							{
+								System.out.print("* Enter the contact's name: ");  
+				                String name = input.nextLine();  
+				
+				                for (int i = 0; i < ContactList.size ; i++){  
+				                    if (ContactList.retreive().getContactName().compareToIgnoreCase(name) == 0){  
+				                        System.out.println("Contact found!");  
+				                        System.out.println(ContactList.retreive());  
+				                        return; 
+				                    }  
+				
+				                    ContactList.findNext();  
+				                }
+				
+				                System.out.println("* Contact not found! *");
+				                break;
+							}
 		
+		                
+				    //Search by phone number.	
+					case 2 : 
+							{
+								System.out.print("* Enter the contact's phone Number: ");  
+				                String phoneNumber = input.nextLine();  
+				
+				                for (int i = 0; i < ContactList.size ; i++){  
+				                    if (ContactList.retreive().getPhoneNumber().compareToIgnoreCase(phoneNumber) == 0){  
+				                        System.out.println("Contact found!");  
+				                        System.out.println(ContactList.retreive());  
+				                        return;  
+				                    }  
+				
+				                    ContactList.findNext();  
+				                }
+				
+				                System.out.println("* Contact not found! *");
+				                break;
+							}
 		
-		switch(choice) {
-
-		
-			//Search by Name.	
-			case 1 : 
+							
+					//Search by Email Address.	
+					case 3 : 
+							{
+								System.out.print("* Enter the contact's Email Address: ");  
+				                String email = input.nextLine();  
+								
+								if(email.length() != 0)
+				                for (int i = 0; i < ContactList.size ; i++){  
+				                    if (ContactList.retreive().getAddress().compareToIgnoreCase(email) == 0){  
+				                        System.out.println("Contact found!");  
+				                        System.out.println(ContactList.retreive());  
+				                        return;  
+				                    }  
 				
-				System.out.print("* Enter the contact's name: ");  
-                String name = input.nextLine();  
+				                    ContactList.findNext();  
+				                }
+				
+				                System.out.println("* Contact not found! *");
+				                break;	
+							}
+					
+					//Search by Address.
+					case 4 : 
+							{
+								System.out.print("* Enter the contact's Address: ");  
+				                String address = input.nextLine();  
+				
+				              	if(address.length() != 0)
+								for (int i = 0; i < ContactList.size ; i++){  
+				                    if (ContactList.retreive().getAddress().compareToIgnoreCase(address) == 0){  
+				                    	System.out.println("Contact found!");  
+				                        System.out.println(ContactList.retreive());  
+				                        return; 
+				                    }  
+				
+				                    ContactList.findNext();  
+				                }
+				
+				                System.out.println("* Contact not found! *");
+				                break;
+							}
+					
+						
+					//Search by Birthday.
+					case 5 : 
+							{
 
-                for (int i = 0; i < ContactList.size ; i++){  
-                    if (ContactList.retreive().getContactName().compareToIgnoreCase(name) == 0){  
-                        System.out.println("Contact found!");  
-                        System.out.println(ContactList.retreive());  
-                        return; 
-                    }  
-
-                    ContactList.findNext();  
-                }
-
-                System.out.println("* Contact not found! *");
-                break;
-
-		    //Search by phone number.	
-			case 2 : 
-				System.out.print("* Enter the contact's phone Number: ");  
-                String phoneNumber = input.nextLine();  
-
-                for (int i = 0; i < ContactList.size ; i++){  
-                    if (ContactList.retreive().getPhoneNumber().compareToIgnoreCase(phoneNumber) == 0){  
-                        System.out.println("Contact found!");  
-                        System.out.println(ContactList.retreive());  
-                        return;  
-                    }  
-
-                    ContactList.findNext();  
-                }
-
-                System.out.println("* Contact not found! *");
-                break;
-
-			//Search by Email Address.	
-			case 3 : 
+								System.out.print("* Enter the contact's birth day: ");  
+				                String birthDay = input.nextLine();  
+				
+								if(birthDay.length() != 0)
+				                for (int i = 0; i < ContactList.size ; i++){  
+				                    if (ContactList.retreive().getBirthday().compareToIgnoreCase(birthDay)==0){  
+				                        System.out.println("Contact found!");  
+				                        System.out.println(ContactList.retreive());  
+				                        return;  
+				                    }  
+				
+				                    ContactList.findNext();  
+				                }
+				
+				                System.out.println("* Contact not found! *");
+				                break;
+							}
+					
+							
+					// Exit
+					case 6 :
+						return;
+						
+						
+					default :
+						System.out.println(" *** Invaild choice ***");
+						break;
+						
+				}
+			}
+	
+		}catch(NullPointerException NPE) {
 			
-				System.out.print("* Enter the contact's Email Address: ");  
-                String email = input.nextLine();  
-				
-				if(email.length() != 0)
-                for (int i = 0; i < ContactList.size ; i++){  
-                    if (ContactList.retreive().getAddress().compareToIgnoreCase(email) == 0){  
-                        System.out.println("Contact found!");  
-                        System.out.println(ContactList.retreive());  
-                        return;  
-                    }  
-
-                    ContactList.findNext();  
-                }
-
-                System.out.println("* Contact not found! *");
-                break;
+			System.out.println(NPE);
 			
-			//Search by Address.
-			case 4 : 
-
-				System.out.print("* Enter the contact's Address: ");  
-                String address = input.nextLine();  
-
-              	if(address.length() != 0)
-				for (int i = 0; i < ContactList.size ; i++){  
-                    if (ContactList.retreive().getAddress().compareToIgnoreCase(address) == 0){  
-                        System.out.println("Contact found!");  
-                        System.out.println(ContactList.retreive());  
-                        return; 
-                    }  
-
-                    ContactList.findNext();  
-                }
-
-                System.out.println("* Contact not found! *");
-                break;
+		}catch(java.util.InputMismatchException IME){
 			
-				
-			//Search by Birthday.
-			case 5 : 
-				
-				System.out.print("* Enter the contact's birth day: ");  
-                String birthDay = input.nextLine();  
-
-				if(birthDay.length() != 0)
-                for (int i = 0; i < ContactList.size ; i++){  
-                    if (ContactList.retreive().getBirthday().compareToIgnoreCase(birthDay)==0){  
-                        System.out.println("Contact found!");  
-                        System.out.println(ContactList.retreive());  
-                        return;  
-                    }  
-
-                    ContactList.findNext();  
-                }
-
-                System.out.println("* Contact not found! *");
-                break;
+			System.out.println(" *** Invaild choice ***");
 			
-			// Exit
-			case 6 :
-				break;
-				
-			default :
-				System.out.print("Invaild choice, please re enter a vaild choice: ");
-				break;
-				
+		}catch(Exception E) {
+			
+			System.out.println(E);
+			
 		}
-		
 	}
 	
 	
 	
+	//================================
 	//================================
 	public void Remove() {
-		System.out.print("Enter Contact's Name: ");
-		String name = input.nextLine();
-		if(ContactList.isEmpty()) {
-			System.out.println("\n *** Contact not found! ***");
-			return;
-			}
-
-		ContactList.findFirst();
-		for(int i=0;i<ContactList.size;i++) {
-			if(ContactList.retreive().getContactName().compareToIgnoreCase(name)==0) {
-				
-				ContactList.remove();
-				System.out.println(" * Contact is deleted. *");
-				
-				Event.EventList.findFirst();
-				int numberOfRemovedEvents=0,size = Event.EventList.size;
-				for(int j=0;j<size;j++) {
-					if(Event.EventList.retreive().getEventContact().compareToIgnoreCase(name)==0) {
-						Event.EventList.remove();
-						numberOfRemovedEvents++;
-					}
-					Event.EventList.findNext();
+		try {
+			
+			
+			System.out.print("Enter Contact's Name: ");
+			String name = input.nextLine();
+			
+			//Start the remove
+			{
+				if(ContactList.isEmpty()) {
+					
+					System.out.println("\n *** Contact not found! ***");
+					return;
+					
 				}
-				System.out.println(" * " + numberOfRemovedEvents + " Event\\s Connected to this contact removed *");
-				return;
+
+				//set current at first
+				ContactList.findFirst();
+				
+				for(int i=0;i<ContactList.size;i++) {
+					
+					//check the entered name with current's name
+					if(ContactList.retreive().getContactName().compareToIgnoreCase(name)==0) {
+						
+						
+						ContactList.remove();
+						System.out.println(" * Contact is deleted. *");
+						
+						//remove related events
+						{
+							
+							//set current at first
+							Event.EventList.findFirst();
+							
+							int numberOfRemovedEvents=0,size = Event.EventList.size; //we may have to delete multiple events which will decrease the size, to make sure we check the whole list. we have to save the size in a variable so it wont change during the loop
+							//checking the whole EventList
+							for(int j=0;j<size;j++) {
+								
+								//if the participated contact is the removed contact, delete the event
+								if(Event.EventList.retreive().getEventContact().compareToIgnoreCase(name)==0) {
+									
+									Event.EventList.remove();
+									numberOfRemovedEvents++;
+									
+								}
+								//move current to the next event
+								Event.EventList.findNext();
+								
+							}
+							System.out.println(" * " + numberOfRemovedEvents + " Event\\s Connected to this contact removed *");
+							return;
+							
+							
+						}
+						
+						
+					}
+					//move current to the next contact
+					ContactList.findNext();
+					
+					
+				}
+				System.out.println("\nContact not found.");
+				
 			}
-
-			ContactList.findNext();
+			
+			
+		}catch(NullPointerException NPE) {
+			
+			System.out.println(NPE);
+			
+		}catch(InputMismatchException IME) {
+			
+			System.out.println(IME);
+			
+		}catch(Exception E) {
+			
+			System.out.println(E);
+			
 		}
-
-		System.out.println("\nContact not found.");
 	}
 		
-	
-
-	public void PrintAll() {
-		ContactList.findFirst();
-		for(int i=0;i<ContactList.size;i++) {
-			System.out.println(ContactList.retreive());
-			ContactList.findNext();
-		}
-	}
 
 
-	
+	//================================
 	//================================
 	public void EventSchedule() {
-		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm");
 		
-		
-
 		try{
+			//create date format so we can save and compare date safely
+			SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+			
+			
 			//request data from the user
 			System.out.print("* Enter event title: ");
 			String title = input.nextLine();
@@ -363,10 +455,10 @@ public class PhoneBook {
 						!Event.isValidDate(startDate, "MM/dd/yyyy HH:mm") ||
 						!Event.isValidDate(endDate, "MM/dd/yyyy HH:mm")) {
 					
-					System.out.println(" *** Please consider the following rules                                  ***");
-					System.out.println(" *** 1 - The start date cannot be in the past (you are not time traveler) ***");
-					System.out.println(" *** 2 - The end date comes after the start date                          ***");
-					System.out.println(" *** 3 - You have to follow this format MM/DD/YYYY HH:MM                  ***");
+					System.out.println(" *** Please consider the following rules                                           ***");
+					System.out.println(" *** 1 - The start date cannot be in the past (assuming you are not time traveler) ***");
+					System.out.println(" *** 2 - The end date comes after the start date                                   ***");
+					System.out.println(" *** 3 - You have to follow this format MM/DD/YYYY HH:MM                           ***");
 					return;
 				}
 				
@@ -381,150 +473,248 @@ public class PhoneBook {
 			}//Input checking is done.
 			
 			
-			
-			Event event = new Event(title,name,startDate,endDate,location);
-			
-			if(!Event.EventList.isEmpty()) {
-			
-				Event.EventList.findFirst();
+			//start scheduling the event
+			{
+				
+				
+				Event event = new Event(title,name,startDate,endDate,location);
+				
+				if(!Event.EventList.isEmpty()) {
+					
+					//set current at first
+					Event.EventList.findFirst();
+					
+					//search for the right place to add the new event, the search is alphabetical-base
+					while(event.compareTo(Event.EventList.retreive())>=0) {
+						
+						//if the same name title exist
+						if(event.compareTo(Event.EventList.retreive())==0) {
+							System.out.println("\n Event Already Exists");
+							return;
+						}
+						
+						//move to the next event if the current is not the last
+						else if(!Event.EventList.last()) 
+							Event.EventList.findNext();
 
-				while(event.compareTo(Event.EventList.retreive())>=0) {
-					if(event.compareTo(Event.EventList.retreive())==0) {
-						System.out.println("\n Event Already Exists");
-						return;
-					}
-					else if(!Event.EventList.last()) 
-						Event.EventList.findNext();
-
-					else {
-						Event.EventList.insertAtEnd(event);
-						System.out.println("\n * Event Ssheduled successfully *");
-						return;
+						//if the current is the last, insertAtEnd
+						else {
+							Event.EventList.insertAtEnd(event);
+							System.out.println("\n * Event Ssheduled successfully *");
+							return;
+						}
 					}
 				}
+				
+				
+				Event.EventList.insert(event);
+				System.out.println("\n * Event Ssheduled successfully *");
+				
+				
 			}
 
-			Event.EventList.insert(event);
-			System.out.println("\n * Event Ssheduled successfully *");
 
-
-		}catch(InputMismatchException e){
+		}catch(InputMismatchException E){
 			System.out.println("\n ***ERROR: title, name, startDate, and, endDate are required. ***");
 	
-		}catch(NullPointerException NL) {
-			System.out.println(NL);
+		}catch(NullPointerException NPE) {
+			System.out.println(NPE);
 			
-		}catch(Exception ex){
-			System.out.println(ex);
+		}catch(Exception E){
+			System.out.println(E);
 			
 		}
 	}
 
 
 	
+	//================================
 	//================================
 	public void PrintEventDetails() {
 		
-		if(Event.EventList.isEmpty()) {
-			System.out.println("Your event list is empty!, there is nothing to search.");
-			return;
-		}
-
-		Event.EventList.findFirst();
-		System.out.println("Enter search citeria:");
-		System.out.println("1. Contact Name");
-		System.out.println("2. Event Title");
-
-
-		int choice = input.nextInt();
-		input.nextLine();
-
-		switch(choice) {
-
-		case 1: 
-			System.out.print("Enter Contact Name: "); String contactName=input.nextLine();
+		try {
 			
-			for (int i = 0; i < Event.EventList.size ; i++){
-	            if (Event.EventList.retreive().getEventTitle().compareToIgnoreCase(contactName)==0){ 
-	                System.out.println(Event.EventList.retreive());  
-	                return; 
-	            }  
+			if(Event.EventList.isEmpty()) {
+				System.out.println("Your event list is empty!, there is nothing to search.");
+				return;
+			}
+			
+			//set current at first
+			Event.EventList.findFirst();
+			
+			//Receiving input, no need for validation
+			System.out.println("Enter search citeria:");
+			System.out.println("1. Contact Name");
+			System.out.println("2. Event Title");
 
-	            Event.EventList.findNext();  
-	        }
-	        return;
+
+			int choice = input.nextInt();
+			input.nextLine();                              //when entering the value x, we click "enter", this field catches that "enter" so it wont disturb the program.
+
+			switch(choice) {
+
+			case 1: 
+				{
+					System.out.print("Enter Contact Name: "); String contactName=input.nextLine();
+					
+					for (int i = 0; i < Event.EventList.size ; i++){
+						
+						//check if current event's contact matches the entered contact 
+			            if (Event.EventList.retreive().getEventContact().compareToIgnoreCase(contactName)==0){ 
+			            	
+			                System.out.println(Event.EventList.retreive());  
+			                return; 
+			                
+			            }  
+			            //move current to the next event
+			            Event.EventList.findNext();  
+			        }
+					System.out.println(" * Event not found! *");
+			        return;
+				}
 
 
-		case 2 :
-			System.out.print("Enter Event Title: "); 
-			String eventTitle=input.nextLine();
+			case 2 :
+				{
+					System.out.print("Enter Event Title: "); 
+					String eventTitle=input.nextLine();
+					
+					for (int i = 0; i < Event.EventList.size ; i++){
+						
+						//check if current event's title matches the entered title 
+			            if (Event.EventList.retreive().getEventTitle().compareToIgnoreCase(eventTitle)==0){ 
+			            	
+			                System.out.println(Event.EventList.retreive());  
+			                return; 
+			                
+			            }  
+			            //move current to the next event
+			            Event.EventList.findNext();  
+			        }
 
-			for (int i = 0; i < Event.EventList.size ; i++){
-	            if (Event.EventList.retreive().getEventTitle().compareToIgnoreCase(eventTitle)==0){ 
-	                System.out.println(Event.EventList.retreive());  
-	                return; 
-	            }  
-
-	            Event.EventList.findNext();  
-	        }
-
-			System.out.println("Event not found!");
-	        return;
+					System.out.println(" * Event not found! *");
+			        return;
+				}
+				
+				
+			}
+			
+		}catch(InputMismatchException IME) {
+			
+			System.out.println(IME);
+			
+		}catch(NullPointerException NPE) {
+			
+			System.out.println(NPE);
+			
+		}catch(Exception E) {
+			
+			System.out.println(E);
+			
 		}
+		
 	}
 
 
-
+	
+	//================================
 	//================================
 	public void PrintContactsByFirstName() {
 		
-		boolean found=false;
-	
-		if(ContactList.isEmpty()) {
-			System.out.println("Your contact list is empty!, there is nothing to search.");
-			return;
-		}
-
 		try{
+			
+			//if we found any contact, we will remark it to true
+			boolean found=false;
+			
+			
+			if(ContactList.isEmpty()) {
+				System.out.println("Your contact list is empty!, there is nothing to search.");
+				return;
+			}
+			
+			
 			System.out.print("Enter The First Name: ");
 			String FirstName = input.nextLine();
 
-			if(FirstName.length() == 0)
-				throw new MarshalException();
-			
-
+			if(FirstName.length() == 0) {
+				System.out.println(" *** Invaild Input ***");
+				return;
+			}
+				
+			//set current at first
 			ContactList.findFirst();
 
 			for (int i = 0; i < ContactList.size ; i++){
-				if (ContactList.retreive().getContactName().length()>=FirstName.length()&&
+				
+				
+				//if the current name contains letter at much as the input name, check if they are the same and print (this field check for contacts that have only first name)
+				if (ContactList.retreive().getContactName().length()==FirstName.length()&&
 					ContactList.retreive().getContactName().substring(0, FirstName.length()).compareToIgnoreCase(FirstName)==0){ 
 					found=true;
 					System.out.println(ContactList.retreive()); 
-				}  
+				} 
+				
+				
+				/***if the current name contains letter more than input name, add to the entered name " " space and compare it with the current name (this field check for contacts that have more than the first name
+				 	actually the main goal for this section is to eliminate  first names that share their first part with the enter name
+				 	for an example assume the first name i am looking for is "Mesh", this section will eliminate names such as "Meshal" and look for only names that starts with Mesh then " " (space) ***/
+				else if (ContactList.retreive().getContactName().length()>FirstName.length()&&
+					ContactList.retreive().getContactName().substring(0, FirstName.length()+1).compareToIgnoreCase(FirstName+" ")==0){ 
+					found=true;
+					System.out.println(ContactList.retreive()); 
+				} 
 
 				ContactList.findNext();  
 			}
-
+			
 			if(!found) System.out.println("\n *** Contact not found! ***");
 			
-		}catch(MarshalException ex){
-			System.out.print("\n *** Please enter valid name ***");
+		}catch(NullPointerException NPE){
+			
+			System.out.println(NPE);
+			
+		}catch(InputMismatchException IME) {
+			
+			System.out.println(IME);
+			
+		}
+		
+		catch(Exception E) {
+			
+			System.out.println(E);
+			
 		}
 		
 	}
 
-		
+	
+	
+	//================================
 	//================================
 	public void PrintOrdredEvents() {
 		
-		if(Event.EventList.isEmpty()) 
-			System.out.println(" * There is no events to show *");
-		
-		
-		Event.EventList.findFirst();
-		for(int i=0;i<Event.EventList.size;i++) {
-			System.out.println(Event.EventList.retreive());
-			Event.EventList.findNext();
+		try {
+			
+			if(Event.EventList.isEmpty()) 
+				System.out.println(" * There is no events to show *");
+			
+			//set current at first
+			Event.EventList.findFirst();
+			
+			//Print the whole list directly
+			for(int i=0;i<Event.EventList.size;i++) {
+				System.out.println(Event.EventList.retreive());
+				Event.EventList.findNext();
+			}
+			
+		}catch(NullPointerException NPE) {
+			
+			System.out.println(NPE);
+			
+		}catch(Exception E) {
+			
+			System.out.println(E);
+			
 		}
 	}
 	
