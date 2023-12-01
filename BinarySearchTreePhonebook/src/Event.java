@@ -5,14 +5,11 @@ import java.text.SimpleDateFormat;
 
 public class Event implements Comparable<Event> {
 	
-	//Fields for Event's  title/Date and Time/Location/related Contact
-	private String eventTitle;
-	private String eventLocation;
-	private String eventContact;
+	//Fields for event's details , type and its related list.
+	private String eventTitle , eventLocation , eventContact;
 	private Boolean IsAppointment;
 	private int contactCounter;
-	Date eventStartDate;
-	Date eventEndDate;
+	Date eventStartDate, eventEndDate;
 	LinkedListADT<Event> EventList;
 
 	
@@ -86,13 +83,14 @@ public class Event implements Comparable<Event> {
 	    }
 	}
 	
-    // Setters/Getters for Event's fields
+
 	public int compareTo(Event event) throws NullPointerException{
 		return this.eventTitle.compareToIgnoreCase(event.getEventTitle());
 	}
 
 
 	//================================
+	// A method to tell us whether the input date is valid or not.
 	public boolean isValidDate(String Date, String format){
 	
 		SimpleDateFormat var = new SimpleDateFormat(format);
@@ -108,7 +106,7 @@ public class Event implements Comparable<Event> {
     }
 
 
-	// Return True if has a conflict with exist event
+	// A method to tell us whether there's date conflicts or not.
 	public boolean hasConflict(Date startDate, Date endDate){
 
 		if(EventList.isEmpty())
@@ -128,7 +126,7 @@ public class Event implements Comparable<Event> {
 		return false;
 	}
 
-
+	 // Setters/Getters for Event's data fields.
 	public String getEventTitle() {
 		return eventTitle; //bigO(1)
 	}
@@ -185,7 +183,7 @@ public class Event implements Comparable<Event> {
 	}
 
 	@Override
-	public String toString() {
+	public String toString() { //toString method for all event's details.
 		return  "\n***********************************" +
 				"\neventType: " + EventType() +
 				"\neventTitle: " + eventTitle +
@@ -195,7 +193,5 @@ public class Event implements Comparable<Event> {
 			    "\neventEndDate: " + eventEndDate +
 			    "\n***********************************";
 	}
-	
-	
 
 }
