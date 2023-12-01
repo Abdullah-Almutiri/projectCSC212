@@ -1,14 +1,8 @@
 package phoneBook;
 
 public class Contact implements Comparable<Contact>  {
-
-	private String name;
-	private String phoneNumber;
-	private String emailAddress;
-	private String address;
-	private String notes;
-	private String birthday;
-	
+	// Data fields for the Contact's details.
+	private String name , phoneNumber , emailAddress , address , notes , birthday;
 	
 	public Contact(String contactName, String phoneNumber,String birthday, String email, String address, String notes) {
 		this.name = contactName;
@@ -20,12 +14,13 @@ public class Contact implements Comparable<Contact>  {
 	}
 
 
-	@Override // if "less than" return negative, if "greater than" return positive, and zero if "equal" 
+	@Override // Overriden method of Comparable interface to compare this contact to another one by the name ,
+		  // returns positive integer in the "greater than" case , zero when equals , negative when "less than".
 	public int compareTo(Contact contact) {
 		return this.name.compareToIgnoreCase(contact.getContactName());
 	}
 
-
+	//Setters\Getters for the data fields.
 	public String getContactName() {
 		return name;
 	}
@@ -86,7 +81,7 @@ public class Contact implements Comparable<Contact>  {
 	}
 	
 	@Override
-	public String toString() {
+	public String toString() { //toString method for all contact's details.
 		return 	"\n***********************************"+
 				"\nName: "         + name + 
 				"\nPhoneNumber: "  + phoneNumber + 
@@ -95,10 +90,6 @@ public class Contact implements Comparable<Contact>  {
 				"\nBirthDay: "     + birthday + 
 				"\nNotes: "        + notes +
 				"\n***********************************";
-	}//Prints contact details
-	
-	
-	
-	
+	}
 
 }
