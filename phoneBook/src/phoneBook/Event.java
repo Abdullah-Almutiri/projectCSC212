@@ -1,17 +1,16 @@
 package phoneBook;
-import java.util.Date;import 
-java.text.ParseException;
+import java.util.Date;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 
 public class Event implements Comparable<Event> {
 	
-	//Fields for Event's  title/Date and Time/Location/related Contact
-	private String eventTitle;
-	private String eventContact;
-	private String eventLocation;
-	Date eventStartDate;
-	Date eventEndDate;
+	//Data fields for event's details , type and its related data-structure (LinkedList) to store its related .
+	private String eventTitle , eventLocation , eventContact;
+	private Boolean IsAppointment;
+	private int contactCounter;
+	Date eventStartDate, eventEndDate;
 	LinkedListADT<Event> EventList;
 
 	
@@ -45,7 +44,7 @@ public class Event implements Comparable<Event> {
 
 
 	//================================
-	public boolean isValidDate(String Date, String format){
+	public boolean isValidDate(String Date, String format){ //  Method to tells us if the input date valid or not.
 	
 		SimpleDateFormat var = new SimpleDateFormat(format);
         var.setLenient(false);
@@ -60,7 +59,7 @@ public class Event implements Comparable<Event> {
     }
 
 
-	// Return True if has a conflict with exist event
+	// A method to solve "date conflicts issue" , return True if there's a conflict with another 'exist' event.
 	public boolean hasConflict(Date startDate, Date endDate){
 
 		if(EventList.isEmpty())
@@ -123,7 +122,7 @@ public class Event implements Comparable<Event> {
 	}
 
 	@Override
-	public String toString() {
+	public String toString() { //toString method for all event's details.
 		return  "\n***********************************" +
 				"\neventTitle: " + eventTitle +
 			    "\neventLocation: " + eventLocation +
